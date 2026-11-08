@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BlackShield</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet" />
+  <style>
+    h1 {margin-bottom: 3rem;}
+    p {font-size: 4.5rem;}
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: #000;
+      color: #00ff88;
+      overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
+    }
+    #matrix-canvas {
+      position: fixed;
+      top: 0;
+
+
+      
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      opacity: 0.1;
+      pointer-events: none;
+      background: black;
+    }
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1001;
+      background-color: #000;
+      padding: 1rem 2rem;
+      box-shadow: 0 0 20px #00ff88;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+    .nav-links a {
+      margin-left: 1.5rem;
+      color: #00ff88;
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover {
+      color: #00ffaa;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      z-index: 10;
+      position: relative;
+      height: 75vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    main {
+      position: relative;
+      z-index: 10;
+    }
+    .section {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem 1rem;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+    .section.active {
+      display: flex;
+      opacity: 1;
+    }
+    h1, h2 {
+      margin-bottom: 1rem;
+      font-weight: bold;
+      color: #00ff88;
+      font-size: 2rem;
+      opacity: 0;
+      animation: fadeIn 1.5s forwards;
+    }
+    p {
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+      max-width: 100%;
+      opacity: 0;
+      animation: fadeIn 2s ease-in-out forwards;
+    }
+    .video-bg {
+      width: 100%;
+      max-width: 600px;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 0 20px #00ff88;
+      max-height: 45vh;
+      object-fit: contain;
+      animation: pulseGlow 3s ease-in-out infinite;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+    .video-bg:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 40px #00ffaa;
+      animation-play-state: paused;
+    }
+    .responsive-img {
+      width: 100%;
+      max-width: 150px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px #00ff88;
+      animation: floatGlow 4s ease-in-out infinite;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      margin-top: 1rem;
+      cursor: pointer;
+    }
+    #vision img {
+      animation-delay: 0s;
+    }
+    #mision img {
+      animation-delay: 1.5s;
+    }
+    #quienes img {
+      animation-delay: 3s;
+    }
+    .responsive-img:hover {
+      transform: translateY(-10px) scale(1.1);
+      box-shadow: 0 0 30px #00ffaa;
+      animation-play-state: paused;
+    }
+    .form {
+      width: 100%;
+      max-width: 600px;
+      opacity: 0;
+      animation: fadeIn 2s ease-in-out forwards;
+    }
+    .form input, .form textarea {
+      width: 100%;
+      padding: 1rem;
+      background: #111;
+      border: 1px solid #00ff88;
+      color: #00ff88;
+      margin-bottom: 1rem;
+      border-radius: 6px;
+    }
+    button {
+      padding: 1rem 2rem;
+      background-color: #00ff88;
+      border: none;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #00ffaa;
+    }
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+    @keyframes pulseGlow {
+      0%, 100% {
+        box-shadow: 0 0 20px #00ff88;
+      }
+      50% {
+        box-shadow: 0 0 35px #00ffaa;
+      }
+    }
+    @keyframes floatGlow {
+      0%, 100% {
+        transform: translateY(0);
+        box-shadow: 0 0 15px #00ff88;
+      }
+      50% {
+        transform: translateY(-15px);
+        box-shadow: 0 0 30px #00ffaa;
+      }
+    }
+    .product-card {
+  background-color: #111;
+  border: 2px solid #00ff88;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 0 25px #00ffaa;
+  animation: pulseGlow 3s ease-in-out infinite;
+  transition: transform 0.3s ease;
+  max-width: 400px;
+  text-align: center;
+  }
+  .product-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 35px #00ffaa;
+  }
+  .product-card h3 {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    color: #00ff88;
+  }
+  .product-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem;
+  }
+  .product-card li {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+  }
+  .product-card .price {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #00ffaa;
+  }
+
+    /* Botón discreto para video de prueba */
+    #btn-video-prueba {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background: transparent;
+      border: none;
+      color: #00ff88;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 500;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      opacity: 0.3;
+      transition: opacity 0.3s ease;
+      z-index: 1100;
+      user-select: none;
+    }
+    #btn-video-prueba:hover {
+      opacity: 1;
+    }
+    /* Icono simple estilo "play" */
+    #btn-video-prueba svg {
+      fill: #00ff88;
+      width: 18px;
+      height: 18px;
+    }
+
+    /* Nuevo botón para audio */
+    #btn-audio {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      opacity: 0.4;
+      transition: opacity 0.3s ease;
+      z-index: 1100;
+      user-select: none;
+      padding: 4px;
+    }
+    #btn-audio:hover {
+      opacity: 1;
+    }
+    #btn-audio svg {
+      fill: #00ff88;
+      width: 24px;
+      height: 24px;
+      filter: drop-shadow(0 0 2px #00ff88);
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrix-canvas"></canvas>
+
+  <nav class="navbar">
+    <div class="logo">BlackShield</div>
+    <div class="nav-links">
+      <a onclick="showSection('inicio')">Inicio</a>
+      <a onclick="showSection('vision')">Visión</a>
+      <a onclick="showSection('mision')">Misión</a>
+      <a onclick="showSection('quienes')">¿Quiénes Somos?</a>
+      <a onclick="showSection('contacto')">Contacto</a>
+      <a onclick="showSection('productos')">Productos</a>
+    </div>
+  </nav>
+
+  <main>
+    <section id="inicio" class="section active">
+      <div class="container">
+        <h1>Has ingresado a BlackShield</h1>
+        <p>Protección digital al teclado de tu casa.</p>
+        <video autoplay muted playsinline loop class="video-bg">
+          <source src="Recursos/videos/Seguridad.mp4" type="video/mp4" />
+          Tu navegador no soporta el video.
+        </video>
+      </div>
+    </section>
+
+    <section id="vision" class="section">
+      <div class="container">
+        <h2>Nuestra Visión</h2>
+        <p>Ser líderes en la transformación digital segura, promoviendo un ciberespacio confiable donde individuos, empresas y gobiernos puedan operar con total confianza. Aspiramos a convertirnos en un referente internacional de innovación, ética y excelencia en ciberseguridad, anticipándonos a las amenazas emergentes mediante inteligencia proactiva, tecnologías avanzadas y un compromiso inquebrantable con la protección de los datos y sistemas críticos. Nuestra visión es construir un futuro donde la ciberseguridad no sea una barrera, sino un habilitador del crecimiento sostenible, de la privacidad y de la libertad digital.</p>
+        <img src="Recursos/img/bases.png" alt="Visión" class="responsive-img" />
+      </div>
+    </section>
+
+    <section id="mision" class="section">
+      <div class="container">
+        <h2>Nuestra Misión</h2>
+        <p>Nuestra misión es proporcionar soluciones integrales de ciberseguridad que protejan de manera efectiva la información, infraestructura y operaciones digitales de nuestros clientes. A través de una combinación de tecnología de punta, análisis predictivo, formación continua y consultoría especializada, buscamos minimizar los riesgos cibernéticos y fortalecer la resiliencia organizacional frente a ataques cada vez más sofisticados. Nos enfocamos en ofrecer un acompañamiento cercano, personalizado y ético, impulsando la concienciación en seguridad informática.</p>
+        <img src="Recursos/img/llave.png" alt="Misión" class="responsive-img" />
+      </div>
+    </section>
+
+    <section id="quienes" class="section">
+      <div class="container">
+        <h2>¿Quiénes Somos?</h2>
+        <p class="section-text">
+          En <strong>BlackShield</strong>, somos una fuerza de defensa digital conformada por expertos en ciberseguridad, inteligencia artificial, análisis de amenazas y protección de datos. Nuestro equipo multidisciplinario está comprometido con una misión: <em>blindar el entorno digital</em> de empresas, gobiernos e individuos frente a los desafíos crecientes del ciberespacio.
+          <br><br>
+          Nacimos con la convicción de que la seguridad no es solo una necesidad técnica, sino un <strong>derecho digital fundamental</strong>. Por eso, combinamos tecnología de última generación con un enfoque humano y estratégico, anticipándonos a las amenazas antes de que se conviertan en crisis.
+          <br><br>
+          <strong>Somos BlackShield.</strong><br><br>
+        </p>
+        <img src="Recursos/img/hack.png" alt="Equipo" class="responsive-img" />
+      </div>
+    </section>
+
+    <section id="contacto" class="section">
+      <div class="container">
+        <h2>Contáctanos</h2>
+        <form id="contact-form" class="form">
+          <input type="text" placeholder="Nombre completo" required />
+          <input type="email" placeholder="Correo electrónico" required />
+          <input type="tel" placeholder="Teléfono (opcional)" pattern="[0-9+ ]{7,15}" />
+          <textarea placeholder="Escribe tu mensaje aquí..." rows="5" required></textarea>
+          <button type="submit">Enviar mensaje</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <section id="productos" class="section">
+  <div class="container">
+    <h2>Productos</h2>
+    <div class="product-card">
+      <h3>Servidor de Información</h3>
+      <ul>
+        <li>Nube de 10 Teras</li>
+        <li>Duración: 1 mes</li>
+        <li>Seguridad de punta</li>
+      </ul>
+      <div class="price">$300.000</div>
+    </div>
+  </div>
+</section>
+
+  <!-- Botón discreto para video de prueba -->
+  <button id="btn-video-prueba" title="Video de prueba" aria-label="Abrir video de prueba">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M8 5v14l11-7z"></path>
+    </svg>
+    Video de prueba
+  </button>
+
+  <!-- Nuevo botón para reproducir audio -->
+  <button id="btn-audio" title="Reproducir audio" aria-label="Reproducir audio">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M3 9v6h4l5 5V4L7 9H3z"/>
+    </svg>
+  </button>
+
+  <script>
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach((sec) => {
+        sec.classList.remove('active');
+        sec.querySelectorAll('p, .form, h1, h2').forEach(el => {
+          el.style.opacity = '0';
+          el.style.animation = 'none';
+        });
+      });
+
+      const section = document.getElementById(id);
+      section.classList.add('active');
+
+      section.querySelectorAll('h1, h2').forEach(el => {
+        el.style.animation = 'fadeIn 1.5s forwards';
+      });
+      section.querySelectorAll('p, .form').forEach(el => {
+        el.style.animation = 'fadeIn 2s ease-in-out forwards';
+      });
+    }
+
+    document.getElementById('contact-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      alert('Mensaje enviado correctamente.');
+      this.reset();
+    });
+
+    const canvas = document.getElementById('matrix-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+
+    const letters = '01';
+    const fontSize = 14;
+    const columns = Math.floor(width / fontSize);
+    const drops = Array(columns).fill(1);
+
+    function draw() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.008)';
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.fillStyle = '#00ff88';
+      ctx.font = fontSize + 'px monospace';
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters.charAt(Math.floor(Math.random() * letters.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    }
+
+    setInterval(draw, 50);
+
+    window.addEventListener('resize', () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+    });
+
+    // Evento click para botón video prueba
+    document.getElementById('btn-video-prueba').addEventListener('click', () => {
+      window.open('https://www.youtube.com/shorts/CkipsJYGR98', '_blank');
+    });
+
+    // Audio setup
+    const audio = new Audio('Recursos/audios/4pared.mp3'); // Cambia esta ruta al archivo que tengas
+
+    document.getElementById('btn-audio').addEventListener('click', () => {
+      audio.play();
+    });
+  </script>
+</body>
+</html>
